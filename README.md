@@ -41,3 +41,15 @@ For development-only API experiments, set `APP_SECURITY_ENABLED=false` before st
 Student Service generates admission numbers when an admission is created. The format is `YYYYMMDDNNN`, where `NNN` starts at `001` for each school on each date. For example, the first two admissions on 10 September 2026 are `20260910001` and `20260910002`.
 
 See `docs/manual-setup.md` for tasks that require your accounts or infrastructure access.
+
+# How to run in short
+1.   docker compose up -d 
+2.   docker compose ps 
+3.   $env:APP_SECURITY_ENABLED='false'
+     mvn -pl identity-service clean spring-boot:run
+4.   $env:APP_SECURITY_ENABLED='false'
+     mvn -pl student-service clean spring-boot:run
+5.   mvn -pl api-gateway clean spring-boot:run
+6.   cd frontend
+     npm run dev
+
