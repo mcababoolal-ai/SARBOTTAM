@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-service
+  labels: { app: student-service }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: student-service } }
+  template:
+    metadata: { labels: { app: student-service } }
+    spec:
+      containers:
+        - name: student-service
+          image: REPLACE_WITH_ECR_URI/student-service:REPLACE_WITH_SHA
+          ports: [{ containerPort: 8083 }]
+          env:
+            - { name: DATABASE_URL, valueFrom: { secretKeyRef: { name: student-service-secrets, key: database-url } } }
+            - { name: DATABASE_USERNAME, valueFrom: { secretKeyRef: { name: student-service-secrets, key: database-username } } }
+            - { name: DATABASE_PASSWORD, valueFrom: { secretKeyRef: { name: student-service-secrets, key: database-password } } }
+            - { name: KAFKA_BOOTSTRAP_SERVERS, valueFrom: { secretKeyRef: { name: student-service-secrets, key: kafka-bootstrap-servers } } }
+            - { name: KEYCLOAK_ISSUER_URI, value: https://auth.example.com/realms/school }
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: "1", memory: 1Gi }
+          readinessProbe: { httpGet: { path: /actuator/health/readiness, port: 8083 }, initialDelaySeconds: 20 }
+          livenessProbe: { httpGet: { path: /actuator/health/liveness, port: 8083 }, initialDelaySeconds: 30 }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: student-service }
+spec:
+  selector: { app: student-service }
+  ports: [{ port: 8083, targetPort: 8083 }]
+  type: ClusterIP

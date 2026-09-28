@@ -1,0 +1,3 @@
+package com.school.identity.api;
+import java.time.Instant;import org.springframework.http.*;import org.springframework.web.bind.annotation.*;
+@RestControllerAdvice class ApiExceptionHandler{@ExceptionHandler(IdentityController.NotFoundException.class)@ResponseStatus(HttpStatus.NOT_FOUND) ErrorResponse notFound(RuntimeException e){return new ErrorResponse("NOT_FOUND",e.getMessage(),Instant.now());}@ExceptionHandler(IdentityController.ConflictException.class)@ResponseStatus(HttpStatus.CONFLICT)ErrorResponse conflict(RuntimeException e){return new ErrorResponse("CONFLICT",e.getMessage(),Instant.now());}record ErrorResponse(String code,String message,Instant timestamp){}}

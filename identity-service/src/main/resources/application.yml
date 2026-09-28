@@ -1,0 +1,14 @@
+server:
+  port: 8084
+spring:
+  application.name: identity-service
+  datasource:
+    url: ${IDENTITY_DATABASE_URL:jdbc:postgresql://localhost:5433/identity_db}
+    username: ${IDENTITY_DATABASE_USERNAME:identity}
+    password: ${IDENTITY_DATABASE_PASSWORD:identity}
+  jpa:
+    open-in-view: false
+    hibernate.ddl-auto: validate
+  security.oauth2.resourceserver.jwt.issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8081/realms/school}
+management.endpoints.web.exposure.include: health,info
+app.security-enabled: ${APP_SECURITY_ENABLED:true}
